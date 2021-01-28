@@ -1,0 +1,22 @@
+.Polaris-DataTable__Cell--numeric {
+  text-align: center;
+}
+.collection-search-result {
+  display: flex;
+  align-items: center;
+}
+.Polaris-DataTable__Cell--verticalAlignTop {
+  vertical-align: middle;
+  text-align: center;
+}
+tr.Polaris-DataTable__TableRow th:first-child {
+  display: none;
+}
+table.Polaris-DataTable__Table thead > tr > th:first-child {
+  display: none;
+}
+@media (min-width: 46.5em) {
+  .Polaris-Page {
+    max-width: 120rem;
+  }
+}

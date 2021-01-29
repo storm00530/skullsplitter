@@ -1,5 +1,6 @@
 import React, { useCallback, useState, useEffect } from "react";
 import {
+  Tooltip,
   AppProvider,
   Icon,
   VisuallyHidden,
@@ -15,7 +16,7 @@ import $ from "jquery";
 import axios from "axios";
 const Collectionlist = gql`
   query {
-    collections(first: 50) {
+    collections(first: 150) {
       edges {
         node {
           id
@@ -37,7 +38,7 @@ export default function TopBarComponent(props) {
   const [collection_info, setCollectioinInfo] = useState({});
   const [searchItem, setSeachItem] = useState([]);
   const [saveActive, setSaveActive] = useState(false);
-  var countCollections = 5;
+  var countCollections = 150;
   const [searchItemActive, setSearchItemActive] = useState(true);
   const [savemodalActive, setSavemodalActive] = useState(false);
   const [discountCode, setDiscountCode] = useState("");
@@ -174,7 +175,7 @@ export default function TopBarComponent(props) {
     logo: {
       width: 66,
       topBarSource:
-        "https://cdn.shopify.com/s/files/1/1066/8352/files/SkullSplitter_Dice_Logo_1_small.jpg?v=1601405473",
+        "//cdn.shopify.com/s/files/1/1066/8352/files/SkullSplitter_Dice_Logo_1_small.jpg?v=1601405473",
       url: "https://www.skullsplitterdice.com/",
       accessibilityLabel: "Skullsplitterdice",
     },
@@ -186,7 +187,7 @@ export default function TopBarComponent(props) {
           items: [{ content: "Save Changes", icon: SaveMinor }],
         },
         {
-          items: [{ content: "Email Developer" }],
+          items: [{ content: "Back to admin" }],
         },
       ]}
       name="Ted core"
@@ -209,11 +210,17 @@ export default function TopBarComponent(props) {
           for (let i = 0; i < data.collections.edges.length; i++) {
             const Col_id = data.collections.edges[i].node.id;
             const Col_title = data.collections.edges[i].node.title;
-            const Col_image = data.collections.edges[i].node.image.src;
+            const Col_image = data.collections.edges[i].node.image
+              ? data.collections.edges[i].node.image.src
+              : "//cdn.shopify.com/s/files/1/1066/8352/files/SkullSplitter_Dice_Logo_1_small.jpg?v=1601405473";
             CollectionTitle.push(Col_title);
             CollectionImage.push(Col_image);
             CollectionId.push(Col_id);
           }
+          if (CollectionTitle[index] === undefined) {
+            return <div className="no-search-result">No Search Results</div>;
+          }
+
           if (
             CollectionTitle[index]
               .toUpperCase()
@@ -261,22 +268,23 @@ export default function TopBarComponent(props) {
   );
 
   const secondaryMenuMarkup = (
-    <TopBar.Menu
-      activatorContent={
-        <span>
-          <Icon source={QuestionMarkMajor} />
-          <VisuallyHidden>Secondary menu</VisuallyHidden>
-        </span>
-      }
-      open={isSecondaryMenuOpen}
-      onOpen={toggleIsSecondaryMenuOpen}
-      onClose={toggleIsSecondaryMenuOpen}
-      actions={[
-        {
-          items: [{ content: "Read this guide" }],
-        },
-      ]}
-    />
+    <Tooltip
+      active
+      content="Please select the page template 'page.raffle' if you want to display it on frontend"
+    >
+      <TopBar.Menu
+        activatorContent={
+          <span>
+            <Icon source={QuestionMarkMajor} />
+            <VisuallyHidden>Secondary menu</VisuallyHidden>
+          </span>
+        }
+        open={false}
+        onOpen={toggleIsSecondaryMenuOpen}
+        onClose={toggleIsSecondaryMenuOpen}
+        actions={[{}]}
+      />
+    </Tooltip>
   );
 
   const topBarMarkup = (

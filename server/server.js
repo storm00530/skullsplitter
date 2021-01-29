@@ -54,6 +54,7 @@ app.prepare().then(() => {
       async afterAuth(ctx) {
         // Access token and shop available in ctx.state.shopify
         const { shop } = ctx.state.shopify;
+
         // const { accessToken } = ctx.session;
         // access_token = accessToken;
         ctx.cookies.set("shopOrigin", shop, { httpOnly: false });
@@ -131,7 +132,7 @@ app.prepare().then(() => {
       },
     };
     const data = await fetch(
-      `https://menglan-app-dev.myshopify.com/admin/api/graphql.json`,
+      `https://skullsplitter.myshopify.com/admin/api/graphql.json`,
       {
         method: "POST",
         headers: {
@@ -167,7 +168,7 @@ app.prepare().then(() => {
       id: discountId.id,
     };
     const data = await fetch(
-      `https://menglan-app-dev.myshopify.com/admin/api/graphql.json`,
+      `https://skullsplitter.myshopify.com/admin/api/graphql.json`,
       {
         method: "POST",
         headers: {
@@ -180,6 +181,7 @@ app.prepare().then(() => {
         }),
       }
     ).then((result) => {
+      console.log(result);
       return result.json();
     });
     ctx.body = data;

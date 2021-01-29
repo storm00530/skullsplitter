@@ -16,14 +16,17 @@ const app = next({
   dev,
 });
 const handle = app.getRequestHandler();
-
-const config_token = require("./config/key");
 const {
   SHOPIFY_API_SECRET,
   SHOPIFY_API_KEY,
   SCOPES,
   SHOPIFY_ACCESS_TOKEN,
-} = config_token;
+} = process.env;
+if (process.env.NODE_ENV === "production") {
+  module.exports = require("./prod");
+} else {
+  module.exports = require("./dev");
+}
 
 const Model = require("./models/collection_schema");
 

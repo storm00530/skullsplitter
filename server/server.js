@@ -22,11 +22,6 @@ const {
   SCOPES,
   SHOPIFY_ACCESS_TOKEN,
 } = process.env;
-if (process.env.NODE_ENV === "production") {
-  module.exports = require("./prod");
-} else {
-  module.exports = require("./dev");
-}
 
 const Model = require("./models/collection_schema");
 

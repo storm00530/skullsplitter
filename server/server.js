@@ -7,7 +7,6 @@ import Koa from "koa";
 import next from "next";
 import Router from "koa-router";
 import session from "koa-session";
-import { reset } from "nodemon";
 const CronJob = require('cron').CronJob;
 const adminURL ='https://skullsplitter.myshopify.com/admin/api/graphql.json';
 const cors = require("@koa/cors");

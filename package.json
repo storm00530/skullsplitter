@@ -1,7 +1,7 @@
 {
-  "name": "shopify-app-node",
-  "version": "1.0.0",
-  "description": "Shopify's node app for CLI tool",
+  "name": "shopify-app-skullsplitter",
+  "version": "2.0.0",
+  "description": "Raffle APP for Skullsplitter",
   "scripts": {
     "test": "jest",
     "dev": "cross-env NODE_ENV=development nodemon ./server/index.js --watch ./server/index.js",

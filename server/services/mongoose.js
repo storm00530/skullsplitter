@@ -8,6 +8,7 @@ let count = 0;
 const options = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+  autoIndex: false,
 };
 const connectWithRetry = () => {
   mongoose

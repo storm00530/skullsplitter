@@ -33,6 +33,7 @@
     "@zeit/next-css": "^1.0.1",
     "apollo-boost": "^0.4.9",
     "axios": "^0.21.1",
+    "cron": "^1.8.2",
     "cross-env": "^7.0.3",
     "dotenv": "^8.2.0",
     "graphql": "^14.5.8",

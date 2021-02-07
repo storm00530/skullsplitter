@@ -7,6 +7,9 @@ import Koa from "koa";
 import next from "next";
 import Router from "koa-router";
 import session from "koa-session";
+import { reset } from "nodemon";
+const CronJob = require('cron').CronJob;
+const adminURL ='https://skullsplitter.myshopify.com/admin/api/graphql.json';
 const cors = require("@koa/cors");
 const bodyParser = require("koa-bodyparser");
 dotenv.config();
@@ -23,9 +26,28 @@ const {
   SHOPIFY_ACCESS_TOKEN,
 } = process.env;
 
-const Model = require("./models/collection_schema");
+const Collection_Model = require("./models/collection_schema");
+const Customer_Model = require("./models/customer_schema");
+
+
 
 app.prepare().then(() => {
+  const job  = new CronJob('0 0 */1 * * *', function ( ) {
+    db_reset();
+  }, null, Intl.DateTimeFormat().resolvedOptions().timeZone)
+  job.start();
+
+  const db_reset = async () => {
+    console.log("RESET")
+    let obj = {};
+    const query = {};
+    let newData = {};
+    const option = { multi: true };
+    const items = await Collection_Model.find({});
+    const newOBJ = Object.assign(obj, items[0]);
+    newData = {"$set":{ left_number: newOBJ._doc.leftNumber }};
+    const update = await Customer_Model.updateMany(query, newData, option);
+  };
   const server = new Koa();
 
   server.use(
@@ -132,7 +154,7 @@ app.prepare().then(() => {
       },
     };
     const data = await fetch(
-      `https://skullsplitter.myshopify.com/admin/api/graphql.json`,
+      adminURL,
       {
         method: "POST",
         headers: {
@@ -168,7 +190,7 @@ app.prepare().then(() => {
       id: discountId.id,
     };
     const data = await fetch(
-      `https://skullsplitter.myshopify.com/admin/api/graphql.json`,
+      adminURL,
       {
         method: "POST",
         headers: {
@@ -186,18 +208,46 @@ app.prepare().then(() => {
     });
     ctx.body = data;
   });
+  // get customer data
 
+  router.post("/numberLeft", async (ctx) => {
+    let customerData = ctx.request.body;
+    const query = {customerId:customerData.customerId}
+    const left = await Customer_Model.find(query);
+    if( left[0] ) ctx.body = left[0]._doc.left_number;
+    else ctx.body = null;
+    
+  });
+  // add customer
+  router.post("/customerAdd", async (ctx) => {
+    let customerData = ctx.request.body;
+    const insertData = {
+      customerId: customerData.customerId,
+      left_number: parseInt(customerData.left_number),
+    };
+    const addCustomer = await Customer_Model.create(insertData);
+    ctx.body = addCustomer;
+  });
+  router.post("/customerUpdate", async (ctx) => {
+    const updateData = ctx.request.body;
+    const updateQuery = { customerId: updateData.customerId };
+    const left = parseInt(updateData.left);
+    const newData = { left_number: left };
+    const updateCustomer = await Customer_Model.updateOne(updateQuery, newData);
+    ctx.body = updateCustomer;
+  });
   // get Database
   router.post("/getData", async (ctx) => {
-    const items = await Model.find({});
+    const items = await Collection_Model.find({});
     ctx.body = items;
   });
 
   router.post("/postData", async (ctx) => {
     const collection_info = ctx.request.body;
-    const remove = await Model.deleteMany({});
-    Model.insertMany(collection_info);
+    const remove = await Collection_Model.deleteMany({});
+    Collection_Model.insertMany(collection_info);
 
     ctx.body = { success: true };
   });
+ 
 });

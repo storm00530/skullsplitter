@@ -30,6 +30,7 @@ const CollectionsModel = new Schema(
     },
   },
   { strict: false },
+  { _id: false },
   {
     collection: "discounted_collections",
     timestamps: {

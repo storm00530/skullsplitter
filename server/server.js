@@ -33,7 +33,7 @@ const Customer_Model = require("./models/customer_schema");
 app.prepare().then(() => {
   const job  = new CronJob('0 0 */1 * * *', function ( ) {
     db_reset();
-  }, null, Intl.DateTimeFormat().resolvedOptions().timeZone)
+  }, null,"UTC")
   job.start();
 
   const db_reset = async () => {
@@ -43,9 +43,10 @@ app.prepare().then(() => {
     let newData = {};
     const option = { multi: true };
     const items = await Collection_Model.find({});
-    const newOBJ = Object.assign(obj, items[0]);
-    newData = {"$set":{ left_number: newOBJ._doc.leftNumber }};
-    const update = await Customer_Model.updateMany(query, newData, option);
+    const leftNumber = parseInt(items[0]._doc.leftNumber);
+    console.log("items[0]._doc.leftNumber",leftNumber)
+    newData = {"$set":{ left_number: leftNumber }};
+    Customer_Model.updateMany(query, newData, option);
   };
   const server = new Koa();
 
@@ -213,6 +214,7 @@ app.prepare().then(() => {
     let customerData = ctx.request.body;
     const query = {customerId:customerData.customerId}
     const left = await Customer_Model.find(query);
+    console.log("left",left[0]._doc.left_number)
     if( left[0] ) ctx.body = left[0]._doc.left_number;
     else ctx.body = null;
     

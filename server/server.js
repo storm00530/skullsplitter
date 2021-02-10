@@ -38,7 +38,6 @@ app.prepare().then(() => {
 
   const db_reset = async () => {
     console.log("RESET")
-    let obj = {};
     const query = {};
     let newData = {};
     const option = { multi: true };
@@ -101,7 +100,7 @@ app.prepare().then(() => {
   server.use(router.allowedMethods());
   server.use(router.routes());
   server.listen(port, () => {
-    console.log(`> Ready on http://localhost:${port}`);
+    console.log(`> Server Ready on http://localhost:${port}`);
   });
 
   router.post("/createDiscount", async (ctx) => {
